@@ -1,18 +1,16 @@
 const express = require('express');
-const app = express();
+const socketio = require('socket.io');
 const http = require('http');
+const path = require('path');
+
+const app = express();
 const server = http.createServer(app);
-const { Server } = require('socket.io');
-const io = new Server(server);
+const io = socketio(server);
 
-const __dirname_IndexHTML = __dirname.replace('\\js', '\\') + 'index.html';
+const __dirname_IndexHTML =
+	'C:/Users/jelan/Documents/node-chat-app/js/index.html';
 
-app.use(express.static('css'));
-app.use(express.static('js'));
-
-app.get('/', (req, res) => {
-	res.sendFile(__dirname_IndexHTML);
-});
+app.use(express.static(path.join(__dirname, 'public')));
 
 io.on('connection', (socket) => {
 	console.log('a user connected');
@@ -39,6 +37,5 @@ io.on('connection', (socket) => {
 	});
 });
 
-server.listen(3000, () => {
-	console.log('listening on *:3000');
-});
+const PORT = 3000 || process.env.PORT;
+server.listen(PORT, () => console.log(`Server running on port ${PORT}...`));
